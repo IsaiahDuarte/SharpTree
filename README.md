@@ -8,7 +8,7 @@
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [Building SharpTree](#building-sharptree)
-- [Using SharpTree in PowerShell 5.1](#using-sharptree-in-powershell-51)
+- [Using SharpTree in PowerShell 5.1](#using-sharptree-in-powershell)
   - [Importing the DLL](#importing-the-dll)
   - [Example Usage](#example-usage)
 - [Project Structure](#project-structure)
@@ -21,6 +21,11 @@
 - **PowerShell Integration**: Easily importable into PowerShell 5.1 or 7 scripts for automation and scripting tasks.
 - **Multi-Targeted**: Compatible with both modern .NET environments (.NET 8) and legacy systems via .NET 4.8 for PowerShell 5.1.
 - **Exception Handling**: Robust error handling to manage I/O operations gracefully.
+
+## Upcoming Features
+
+- **ControlUp SBA**: Not an official script, but a way to import the SBA with instructions on possible dll usage. https://support.controlup.com/docs/script-based-actions-sba?
+- **MinSize parameter**: Size threashold for the node children but still calculates total size.
 
 ## Prerequisites
 
