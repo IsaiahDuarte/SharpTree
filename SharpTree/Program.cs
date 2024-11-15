@@ -25,14 +25,14 @@ namespace SharpTree
                 return;
             }
 
-            var fsBehaviour = FilesystemBehaviourFactory.Create(
-                FilesystemBehaviourType.SingleVolume,
+            var fsBehaviors = FilesystemBehaviorsFactory.Create(
+                FilesystemBehaviorType.SingleVolume,
                 startPath);
 
             INode root = FileSystemReader.ReadRecursive(
                 startPath,
                 opts.FollowSymlinks,
-                fsBehaviour);
+                fsBehaviors);
 
             DisplayNode(root, 0);
         }

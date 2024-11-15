@@ -5,7 +5,7 @@ namespace SharpTree.Core.Services
 {
     public static class FileSystemReader
     {
-        public static INode ReadRecursive(string path, bool followSymlinks, IFilesystemBehaviour fsBehaviour)
+        public static INode ReadRecursive(string path, bool followSymlinks, IFilesystemBehavior fsBehaviour)
         {
             var directoryInfo = new DirectoryInfo(path);
             var node = new DirectoryNode(directoryInfo.Name);

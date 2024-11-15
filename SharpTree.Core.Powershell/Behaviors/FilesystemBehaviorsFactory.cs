@@ -2,19 +2,19 @@
 
 namespace SharpTree.Core.Behaviors
 {
-    public static class FilesystemBehaviourFactory
+    public static class FilesystemBehaviorsFactory
     {
-        public static IFilesystemBehaviour Create(FilesystemBehaviourType type, string rootVolume = null)
+        public static IFilesystemBehavior Create(FilesystemBehaviorType type, string rootVolume = null)
         {
             switch (type)
             {
-                case FilesystemBehaviourType.Traverse:
-                    return TraverseBehaviour.Instance;
+                case FilesystemBehaviorType.Traverse:
+                    return TraverseBehaviors.Instance;
 
-                case FilesystemBehaviourType.SingleVolume:
+                case FilesystemBehaviorType.SingleVolume:
                     if (!string.IsNullOrWhiteSpace(rootVolume))
                     {
-                        return new SingleVolumeBehaviour(rootVolume);
+                        return new SingleVolumeBehavior(rootVolume);
                     }
                     throw new ArgumentException("Invalid FilesystemBehaviour type or missing root volume.");
 

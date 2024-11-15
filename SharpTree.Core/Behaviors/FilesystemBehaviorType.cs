@@ -1,6 +1,6 @@
 ﻿namespace SharpTree.Core.Behaviors
 {
-    public enum FilesystemBehaviourType
+    public enum FilesystemBehaviorType
     {
         Traverse,
         SingleVolume
