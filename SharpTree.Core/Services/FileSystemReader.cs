@@ -1,14 +1,17 @@
 ﻿using SharpTree.Core.Behaviors;
 using SharpTree.Core.Models;
+using System.IO;
+using System.Reflection;
 
 namespace SharpTree.Core.Services
 {
     public static class FileSystemReader
     {
-        public static INode ReadRecursive(string path, bool followSymlinks, IFilesystemBehavior fsBehaviour)
+        public static INode ReadRecursive(string path, bool followSymlinks, IFilesystemBehavior fsBehaviour, long minSize, bool isRoot = true)
         {
             var directoryInfo = new DirectoryInfo(path);
             var node = new DirectoryNode(directoryInfo.Name);
+            long totalsize = isRoot ? 0 : node.Size;
 
             IEnumerable<FileSystemInfo> entries;
             try
@@ -33,6 +36,7 @@ namespace SharpTree.Core.Services
                     switch (entry)
                     {
                         case FileInfo fileInfo:
+                            totalsize += fileInfo.Length;
                             node.AddChild(new FileNode(fileInfo.Name, fileInfo.Length));
                             break;
 
@@ -40,10 +44,15 @@ namespace SharpTree.Core.Services
                             var newFsBehaviour = fsBehaviour.GetNextLevel(dirInfo);
                             if (newFsBehaviour != null)
                             {
-                                var childDir = ReadRecursive(dirInfo.FullName, followSymlinks, newFsBehaviour);
+                                var childDir = ReadRecursive(dirInfo.FullName, followSymlinks, newFsBehaviour, minSize, false);
                                 node.AddChild(childDir);
+                                if(node.Size > 0)
+                                {
+                                    totalsize += childDir.Size;
+                                }
                             }
                             break;
+                        
                     }
                 }
                 catch (Exception ex)
@@ -51,9 +60,15 @@ namespace SharpTree.Core.Services
                     Console.Error.WriteLine($"Error processing {entry.FullName}: {ex.Message}");
                 }
             }
+            if (isRoot && node.IsDirectory && minSize > 0)
+            {
+                return new RootNode(node.Name, node.Size, node.Children);
+            }
 
-            node.SortChildren();
+            node.SortChildren();            
             return node;
         }
     }
+
+
 }

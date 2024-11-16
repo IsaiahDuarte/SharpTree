@@ -8,7 +8,7 @@
             {
                 FilesystemBehaviorType.Traverse => TraverseBehavior.Instance,
                 FilesystemBehaviorType.SingleVolume when !string.IsNullOrWhiteSpace(rootVolume) => new SingleVolumeBehavior(rootVolume),
-                _ => throw new ArgumentException("Invalid FilesystemBehaviour type or missing root volume.")
+                _ => throw new ArgumentException("Invalid FilesystemBehaviour typ e or missing root volume.")
             };
         }
     }
