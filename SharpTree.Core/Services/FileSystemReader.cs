@@ -7,7 +7,7 @@ namespace SharpTree.Core.Services
 {
     public static class FileSystemReader
     {
-        public static INode ReadRecursive(string path, bool followSymlinks, IFilesystemBehavior fsBehaviour, long minSize, bool isRoot = true)
+        public static INode ReadRecursive(string path, bool followSymlinks, IFilesystemBehavior fsBehaviour, long minSize, int maxDepth = -1, bool isRoot = true, int currentDepth = 0)
         {
             var directoryInfo = new DirectoryInfo(path);
             var node = new DirectoryNode(directoryInfo.Name);
@@ -41,18 +41,20 @@ namespace SharpTree.Core.Services
                             break;
 
                         case DirectoryInfo dirInfo:
-                            var newFsBehaviour = fsBehaviour.GetNextLevel(dirInfo);
-                            if (newFsBehaviour != null)
+                            if (maxDepth == -1 || currentDepth < maxDepth)
                             {
-                                var childDir = ReadRecursive(dirInfo.FullName, followSymlinks, newFsBehaviour, minSize, false);
+                                var newFsBehaviour = fsBehaviour.GetNextLevel(dirInfo);
+                                if (newFsBehaviour == null)
+                                    break;
+                                
+                                var childDir = ReadRecursive(dirInfo.FullName, followSymlinks, newFsBehaviour, minSize, maxDepth, false, currentDepth + 1);
                                 node.AddChild(childDir);
-                                if(node.Size > 0)
+                                if (node.Size > 0)
                                 {
                                     totalsize += childDir.Size;
                                 }
                             }
                             break;
-                        
                     }
                 }
                 catch (Exception ex)
@@ -60,12 +62,15 @@ namespace SharpTree.Core.Services
                     Console.Error.WriteLine($"Error processing {entry.FullName}: {ex.Message}");
                 }
             }
+
+            node.SortChildren();
+
             if (isRoot && node.IsDirectory && minSize > 0)
             {
                 return new RootNode(node.Name, node.Size, node.Children);
             }
 
-            node.SortChildren();            
+            node.SortChildren();
             return node;
         }
     }

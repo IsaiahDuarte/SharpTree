@@ -9,8 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpTree", "SharpTree\Shar
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpTree.Core.Powershell", "SharpTree.Core.Powershell\SharpTree.Core.Powershell.csproj", "{069432C9-486A-4A91-A71A-E6C5ED172210}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpTree.Core.Tests", "SharpTree.Core.Tests\SharpTree.Core.Tests.csproj", "{17FD69CC-3FF6-4399-893E-B8694E495BC2}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,10 +27,6 @@ Global
 		{069432C9-486A-4A91-A71A-E6C5ED172210}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{069432C9-486A-4A91-A71A-E6C5ED172210}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{069432C9-486A-4A91-A71A-E6C5ED172210}.Release|Any CPU.Build.0 = Release|Any CPU
-		{17FD69CC-3FF6-4399-893E-B8694E495BC2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{17FD69CC-3FF6-4399-893E-B8694E495BC2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{17FD69CC-3FF6-4399-893E-B8694E495BC2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{17FD69CC-3FF6-4399-893E-B8694E495BC2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

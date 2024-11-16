@@ -33,7 +33,8 @@ namespace SharpTree
                 startPath,
                 opts.FollowSymlinks,
                 fsBehaviors,
-                opts.MaxSize);
+                opts.MinSize,
+                opts.MaxDepth);
 
             if (opts.Print)
             {

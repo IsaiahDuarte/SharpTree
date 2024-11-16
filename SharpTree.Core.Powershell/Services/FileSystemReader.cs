@@ -8,7 +8,7 @@ namespace SharpTree.Core.Services
 {
     public static class FileSystemReader
     {
-        public static INode ReadRecursive(string path, bool followSymlinks, IFilesystemBehavior fsBehaviour, long minSize, bool isRoot = true)
+        public static INode ReadRecursive(string path, bool followSymlinks, IFilesystemBehavior fsBehaviour, long minSize, int maxDepth = -1, bool isRoot = true, int currentDepth = 0)
         {
             var directoryInfo = new DirectoryInfo(path);
             var node = new DirectoryNode(directoryInfo.Name);
@@ -46,15 +46,17 @@ namespace SharpTree.Core.Services
                             break;
 
                         case DirectoryInfo dirInfo:
+                            if (maxDepth != -1 || currentDepth > maxDepth)
+                                break;
+                            
                             var newFsBehaviour = fsBehaviour.GetNextLevel(dirInfo);
-                            if (newFsBehaviour != null)
-                            {
-                                var childDir = ReadRecursive(dirInfo.FullName, followSymlinks, newFsBehaviour, minSize);
-                                node.AddChild(childDir);
-                                totalsize += childDir.Size;
-                            }
-                            break;
+                            if (newFsBehaviour == null)
+                                break;
 
+                            var childDir = ReadRecursive(dirInfo.FullName, followSymlinks, newFsBehaviour, minSize);
+                            node.AddChild(childDir);
+                            totalsize += childDir.Size;
+                            break;
                     }
                 }
                 catch (Exception ex)
@@ -63,12 +65,13 @@ namespace SharpTree.Core.Services
                 }
             }
 
+            node.SortChildren();
+
             if (isRoot && node.IsDirectory && minSize > 0)
             {
                 return new RootNode(node.Name, totalsize, node.Children);
             }
 
-            node.SortChildren();
             return node;
         }
     }

@@ -15,7 +15,10 @@ namespace SharpTree
         [Option('p', "print", HelpText = "Prints the node tree.", Required = false, Default = false)]
         public bool Print { get; set; }
 
-        [Option('m', "maxsize", HelpText = "Restricts size saved to the node.", Required = false, Default = 0)]
-        public long MaxSize { get; set; }
+        [Option('m', "MinSize", HelpText = "Restricts size saved to the node.", Required = false, Default = 0)]
+        public long MinSize { get; set; }
+
+        [Option('d', "maxdepth", HelpText = "Restricts how deep the traversal goes, 0 is unlimited", Required = false, Default = -1)]
+        public int MaxDepth { get; set; }
     }
 }
