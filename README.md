@@ -8,11 +8,10 @@
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
 - [Building SharpTree](#building-sharptree)
-- [Using SharpTree in PowerShell 5.1](#using-sharptree-in-powershell)
+- [Using SharpTree in PowerShell](#using-sharptree-in-powershell)
   - [Importing the DLL](#importing-the-dll)
   - [Example Usage](#example-usage)
 - [Project Structure](#project-structure)
-- [License](#license)
 
 ## Features
 
@@ -38,7 +37,7 @@
 1. **Clone the Repository**
 
    ```bash
-   git clone https://github.com/yourusername/SharpTree.git
+   git clone https://github.com/isaiahduarte/SharpTree.git
    cd SharpTree
    ```
 
@@ -56,7 +55,7 @@
 
 ## Building SharpTree
 
-SharpTree is configured to multi-target both `.NET 8` and `.NET 4.8` to ensure compatibility with PowerShell 5.1.
+SharpTree is configured to multi-target both `.NET 8` and `.NET 4.8` to ensure compatibility with PowerShell
 
 ### Steps to Build
 

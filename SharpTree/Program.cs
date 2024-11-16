@@ -33,8 +33,10 @@ namespace SharpTree
                 startPath,
                 opts.FollowSymlinks,
                 fsBehaviors);
-
-            DisplayNode(root, 0);
+            
+            if(opts.Print)
+                DisplayNode(root, 0);
+                
         }
 
         static void DisplayNode(INode node, int indent)

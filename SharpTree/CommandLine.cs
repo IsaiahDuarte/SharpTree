@@ -12,5 +12,8 @@ namespace SharpTree
         [Option('s', "follow-symlinks", HelpText = "Follow symbolic links.", Required = false, Default = false)]
         public bool FollowSymlinks { get; set; }
 
+        [Option('p', "print", HelpText = "Prints the node tree", Required = false, Default = false)]
+        public bool Print { get; set; }
+
     }
 }
