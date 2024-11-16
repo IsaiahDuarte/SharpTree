@@ -21,11 +21,6 @@
 - **Multi-Targeted**: Compatible with both modern .NET environments (.NET 8) and legacy systems via .NET 4.8 for PowerShell 5.1.
 - **Exception Handling**: Robust error handling to manage I/O operations gracefully.
 
-## Upcoming Features
-
-- **ControlUp SBA**: Not an official script, but a way to import the SBA with instructions on possible dll usage. https://support.controlup.com/docs/script-based-actions-sba?
-- **MinSize parameter**: Size threashold for the node children but still calculates total size.
-
 ## Prerequisites
 
 - **.NET 8 SDK**: Required for building the project. [Download Here](https://dotnet.microsoft.com/download/dotnet/8.0)
@@ -147,8 +142,8 @@ Note: Powershell 7 is more efficient and recommended for use.
    # Create a new FileSystemBehavior
    $FSBehaviors = [SharpTree.Core.Behaviors.FilesystemBehaviorsFactory]::Create($FSBehavior, "C:\")
 
-   # Get the root node
-   $Node = [SharpTree.Core.Services.FileSystemReader]::ReadRecursive($ENV:USERPROFILE, $false, $FSBehaviors)
+   # Get the root node                                                     #Path      #SymLinks  #Behavior   #MinSize in bytes
+   $Node = [SharpTree.Core.Services.FileSystemReader]::ReadRecursive($ENV:USERPROFILE, $false, $FSBehaviors, 1024)
 
    # Save node to JSON
    $Node | ConvertTo-Json -Depth 100 | Out-File -FilePath "Node.JSON"
