@@ -35,7 +35,7 @@ param(
 
     [Parameter(Mandatory = $false)]
     [ValidateRange(0, [int]::MaxValue)]
-    [int] $MinSize = 10485760,
+    [int] $MinSize = 0,
 
     [Parameter(Mandatory = $false)]
     [ValidateRange(-1, [int]::MaxValue)]
@@ -47,8 +47,8 @@ param(
 
 function Get-GitPath {
     switch ($PSVersionTable.PSVersion.Major) {
-        5 { return "https://github.com/user-attachments/files/17787130/SharpTree.Core.Powershell.zip" }
-        7 { return "https://github.com/user-attachments/files/17787130/SharpTree.Core.zip" }
+        5 { return "https://github.com/user-attachments/files/17791796/SharpTree.Core.Powershell.zip" }
+        7 { return "https://github.com/user-attachments/files/17791796/SharpTree.Core.zip" }
         default {
             Write-Error "Unsupported PowerShell version: $($PSVersionTable.PSVersion)"
             exit 1
