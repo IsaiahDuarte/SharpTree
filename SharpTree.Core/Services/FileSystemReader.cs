@@ -37,7 +37,10 @@ namespace SharpTree.Core.Services
                     {
                         case FileInfo fileInfo:
                             totalsize += fileInfo.Length;
-                            node.AddChild(new FileNode(fileInfo.Name, fileInfo.Length));
+                            if (fileInfo.Length >= minSize)
+                            {
+                                node.AddChild(new FileNode(fileInfo.Name, fileInfo.Length));
+                            }
                             break;
 
                         case DirectoryInfo dirInfo:
@@ -48,10 +51,10 @@ namespace SharpTree.Core.Services
                                     break;
                                 
                                 var childDir = ReadRecursive(dirInfo.FullName, followSymlinks, newFsBehaviour, minSize, maxDepth, false, currentDepth + 1);
-                                node.AddChild(childDir);
-                                if (node.Size > 0)
+                                totalsize += childDir.Size;
+                                if (childDir.Size > 0)
                                 {
-                                    totalsize += childDir.Size;
+                                    node.AddChild(childDir);
                                 }
                             }
                             break;
@@ -65,15 +68,12 @@ namespace SharpTree.Core.Services
 
             node.SortChildren();
 
-            if (isRoot && node.IsDirectory && minSize > 0)
+            if (isRoot && node.IsDirectory)
             {
-                return new RootNode(node.Name, node.Size, node.Children);
+                return new RootNode(node.Name, totalsize, node.Children);
             }
 
-            node.SortChildren();
             return node;
         }
     }
-
-
 }

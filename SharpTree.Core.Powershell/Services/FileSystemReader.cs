@@ -46,16 +46,19 @@ namespace SharpTree.Core.Services
                             break;
 
                         case DirectoryInfo dirInfo:
-                            if (maxDepth != -1 || currentDepth > maxDepth)
-                                break;
-                            
-                            var newFsBehaviour = fsBehaviour.GetNextLevel(dirInfo);
-                            if (newFsBehaviour == null)
-                                break;
+                            if (maxDepth == -1 || currentDepth < maxDepth)
+                            {
+                                var newFsBehaviour = fsBehaviour.GetNextLevel(dirInfo);
+                                if (newFsBehaviour == null)
+                                    break;
 
-                            var childDir = ReadRecursive(dirInfo.FullName, followSymlinks, newFsBehaviour, minSize);
-                            node.AddChild(childDir);
-                            totalsize += childDir.Size;
+                                var childDir = ReadRecursive(dirInfo.FullName, followSymlinks, newFsBehaviour, minSize, maxDepth, false, currentDepth + 1);
+                                node.AddChild(childDir);
+                                if (node.Size > 0)
+                                {
+                                    totalsize += childDir.Size;
+                                }
+                            }
                             break;
                     }
                 }
@@ -69,7 +72,7 @@ namespace SharpTree.Core.Services
 
             if (isRoot && node.IsDirectory && minSize > 0)
             {
-                return new RootNode(node.Name, totalsize, node.Children);
+                return new RootNode(node.Name, node.Size, node.Children);
             }
 
             return node;
