@@ -47,8 +47,8 @@ param(
 
 function Get-GitPath {
     switch ($PSVersionTable.PSVersion.Major) {
-        5 { return "https://github.com/user-attachments/files/17787131/SharpTree.Core.Powershell.zip" }
-        7 { return "https://github.com/user-attachments/files/17787131/SharpTree.Core.zip" }
+        5 { return "https://github.com/user-attachments/files/17787130/SharpTree.Core.Powershell.zip" }
+        7 { return "https://github.com/user-attachments/files/17787130/SharpTree.Core.zip" }
         default {
             Write-Error "Unsupported PowerShell version: $($PSVersionTable.PSVersion)"
             exit 1
@@ -82,33 +82,36 @@ function Get-SharpTree {
     }
 }
 
-$GitPath = Get-GitPath
-$TempSharpTreePath = "$env:TEMP\SharpTree"
-
-if ([string]::IsNullOrEmpty($SharpTreePath)) {
-    if (!(Get-ChildItem -Path "$TempSharpTreePath" -Filter "SharpTree*.dll" -Recurse | Measure-Object).Count) {
-        $SharpTreeDll = Get-SharpTree -GitPath $GitPath -DestinationPath $TempSharpTreePath
-    } else {
-        $SharpTreeDll = Get-ChildItem -Path "$TempSharpTreePath" -Filter "SharpTree*.dll" -Recurse | Select-Object -First 1 -ExpandProperty FullName
-    }
-} else {
-    $SharpTreeDll = $SharpTreePath
-}
-
-if (!(Test-Path $SharpTreeDll)) {
-    Write-Error "SharpTree DLL not found at '$SharpTreeDll'"
-    exit 1
-}
-
 try {
     $ErrorActionPreference = "Stop"
+    $GitPath = Get-GitPath
+    $TempSharpTreePath = "$env:TEMP\SharpTree-$($PSVersionTable.PSVersion.Major)"
+
+    if ([string]::IsNullOrEmpty($SharpTreePath)) {
+        if ((Get-ChildItem -Path "$TempSharpTreePath" -Filter "SharpTree*.dll" -Recurse -ErrorAction SilentlyContinue | Measure-Object).Count -eq 0) {
+            $SharpTreeDll = Get-SharpTree -GitPath $GitPath -DestinationPath $TempSharpTreePath
+        } else {
+            $SharpTreeDll = Get-ChildItem -Path "$TempSharpTreePath" -Filter "SharpTree*.dll" -Recurse | Select-Object -First 1 -ExpandProperty FullName
+        }
+    } else {
+        $SharpTreeDll = $SharpTreePath
+    }
+
+    if (!(Test-Path $SharpTreeDll)) {
+        Write-Error "SharpTree DLL not found at '$SharpTreeDll'"
+        exit 1
+    }
+
     Add-Type -Path $SharpTreeDll
     $RootPath = ($Path -Split "\\")[0] + "\"
     $FSBehavior = [SharpTree.Core.Behaviors.FilesystemBehaviorType]::SingleVolume
     $FSBehaviors = [SharpTree.Core.Behaviors.FilesystemBehaviorsFactory]::Create($FSBehavior, $RootPath)
+    $ErrorActionPreference = "SilentlyContinue"
     $Node = [SharpTree.Core.Services.FileSystemReader]::ReadRecursive($Path, $false, $FSBehaviors, $MinSize, $MaxDepth)
+    $ErrorActionPreference = "Stop"
     $Node | ConvertTo-Json -Depth 100 | Out-File -FilePath $OutputJsonPath
-
+        
+    Write-Host "Saved Directory Tree to $OutputJsonPath"
 } catch {
     Write-Error "Failed to get directory tree: $_"
     exit 1
