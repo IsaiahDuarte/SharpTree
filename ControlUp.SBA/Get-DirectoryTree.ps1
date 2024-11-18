@@ -48,7 +48,7 @@ param(
 function Get-GitPath {
     switch ($PSVersionTable.PSVersion.Major) {
         5 { return "https://github.com/user-attachments/files/17791796/SharpTree.Core.Powershell.zip" }
-        7 { return "https://github.com/user-attachments/files/17791796/SharpTree.Core.zip" }
+        7 { return "https://github.com/user-attachments/files/17791794/SharpTree.Core.zip" }
         default {
             Write-Error "Unsupported PowerShell version: $($PSVersionTable.PSVersion)"
             exit 1
