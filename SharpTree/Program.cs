@@ -1,5 +1,4 @@
 ﻿using CommandLine;
-using SharpTree.Core.Behaviors;
 using SharpTree.Core.Models;
 using SharpTree.Core.Services;
 
@@ -25,14 +24,8 @@ namespace SharpTree
                 return;
             }
 
-            var fsBehaviors = FilesystemBehaviorsFactory.Create(
-                FilesystemBehaviorType.SingleVolume,
-                startPath);
-
-            INode root = FileSystemReader.ReadRecursive(
+            INode root = FileSystemReader.Read(
                 startPath,
-                opts.FollowSymlinks,
-                fsBehaviors,
                 opts.MinSize,
                 opts.MaxDepth);
 

@@ -9,8 +9,6 @@ namespace SharpTree
         [Value(0, MetaName = "startPath", HelpText = "Path to start traversal.", Required = false)]
         public string StartPath { get; set; } = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
 
-        [Option('s', "follow-symlinks",
-            HelpText = "Follow symbolic links.", Required = false, Default = false)]
         public bool FollowSymlinks { get; set; }
 
         [Option('p', "print", HelpText = "Prints the node tree.", Required = false, Default = false)]

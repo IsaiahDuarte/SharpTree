@@ -1,14 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using SharpTree.Core.Behaviors;
 using SharpTree.Core.Models;
 
 namespace SharpTree.Core.Services
 {
     public static class FileSystemReader
     {
-        public static INode ReadRecursive(string path, bool followSymlinks, IFilesystemBehavior fsBehaviour, long minSize, int maxDepth = -1, bool isRoot = true, int currentDepth = 0)
+        public static INode Read(string path, long minSize = 0, int maxDepth = -1)
+        {
+
+            if (!Directory.Exists(path))
+            {
+                throw new System.ArgumentException($"Path {path} does not exist", nameof(path));
+            }
+
+            return ReadRecursive(path, minSize, maxDepth);
+        }
+
+        private static INode ReadRecursive(string path, long minSize, int maxDepth = -1, bool isRoot = true, int currentDepth = 0)
         {
             var directoryInfo = new DirectoryInfo(path);
             var node = new DirectoryNode(directoryInfo.Name);
@@ -28,7 +38,7 @@ namespace SharpTree.Core.Services
 
             foreach (var entry in entries)
             {
-                if (!followSymlinks && (entry.Attributes & FileAttributes.ReparsePoint) == FileAttributes.ReparsePoint)
+                if ((entry.Attributes & FileAttributes.ReparsePoint) == FileAttributes.ReparsePoint)
                 {
                     continue;
                 }
@@ -48,11 +58,7 @@ namespace SharpTree.Core.Services
                         case DirectoryInfo dirInfo:
                             if (maxDepth == -1 || currentDepth < maxDepth)
                             {
-                                var newFsBehaviour = fsBehaviour.GetNextLevel(dirInfo);
-                                if (newFsBehaviour == null)
-                                    break;
-
-                                var childDir = ReadRecursive(dirInfo.FullName, followSymlinks, newFsBehaviour, minSize, maxDepth, false, currentDepth + 1);
+                                var childDir = ReadRecursive(dirInfo.FullName, minSize, maxDepth, false, currentDepth + 1);
                                 node.AddChild(childDir);
                                 if (node.Size > 0)
                                 {

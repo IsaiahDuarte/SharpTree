@@ -104,10 +104,7 @@ try {
 
     Add-Type -Path $SharpTreeDll
     $RootPath = ($Path -Split "\\")[0] + "\"
-    $FSBehavior = [SharpTree.Core.Behaviors.FilesystemBehaviorType]::SingleVolume
-    $FSBehaviors = [SharpTree.Core.Behaviors.FilesystemBehaviorsFactory]::Create($FSBehavior, $RootPath)
-    $ErrorActionPreference = "SilentlyContinue"
-    $Node = [SharpTree.Core.Services.FileSystemReader]::ReadRecursive($Path, $false, $FSBehaviors, $MinSize, $MaxDepth)
+    $Node = [SharpTree.Core.Services.FileSystemReader]::Read($Path, 0, -1)
     $ErrorActionPreference = "Stop"
     $Node | ConvertTo-Json -Depth 100 | Out-File -FilePath $OutputJsonPath
         

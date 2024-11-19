@@ -2,8 +2,8 @@
   "profiles": {
     "SharpTree": {
       "commandName": "Project",
-      "commandLineArgs": "-m 1000000\r\n-p",
-      "workingDirectory": "C:\\Users\\Isaiah Duarte"
+      "commandLineArgs": "-p",
+      "workingDirectory": "C:\\Users\\Isaiah Duarte\\Downloads"
     }
   }
 }

@@ -41,11 +41,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Behaviors\FilesystemBehaviorsFactory.cs" />
-    <Compile Include="Behaviors\FilesystemBehaviorType.cs" />
-    <Compile Include="Behaviors\IFilesystemBehavior.cs" />
-    <Compile Include="Behaviors\SingleVolumeBehavior.cs" />
-    <Compile Include="Behaviors\TraverseBehavior.cs" />
     <Compile Include="Models\DirectoryNode.cs" />
     <Compile Include="Models\FileNode.cs" />
     <Compile Include="Models\INode.cs" />
