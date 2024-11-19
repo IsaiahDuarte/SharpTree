@@ -46,9 +46,14 @@ param(
 )
 
 function Get-GitPath {
+    param(
+        [string] $URL = 'https://api.github.com/repos/IsaiahDuarte/SharpTree/releases/latest' 
+    )
+
+    $LatestVersion = Invoke-WebRequest -Uri $URL | Select-Object -ExpandProperty Content | ConvertFrom-Json 
     switch ($PSVersionTable.PSVersion.Major) {
-        5 { return "https://github.com/user-attachments/files/17791796/SharpTree.Core.Powershell.zip" }
-        7 { return "https://github.com/user-attachments/files/17791794/SharpTree.Core.zip" }
+        5 { return ($LatestVersion.Assets | Where-Object {$_.Name -eq 'SharpTree.Core.Powershell.zip'}).browser_download_url }
+        7 { return ($LatestVersion.Assets | Where-Object {$_.Name -eq 'SharpTree.Core.zip'}).browser_download_url }
         default {
             Write-Error "Unsupported PowerShell version: $($PSVersionTable.PSVersion)"
             exit 1
@@ -103,7 +108,6 @@ try {
     }
 
     Add-Type -Path $SharpTreeDll
-    $RootPath = ($Path -Split "\\")[0] + "\"
     $Node = [SharpTree.Core.Services.FileSystemReader]::Read($Path, 0, -1)
     $ErrorActionPreference = "Stop"
     $Node | ConvertTo-Json -Depth 100 | Out-File -FilePath $OutputJsonPath
