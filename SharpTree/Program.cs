@@ -1,6 +1,9 @@
 ﻿using CommandLine;
+using Newtonsoft.Json;
 using SharpTree.Core.Models;
 using SharpTree.Core.Services;
+using Terminal.Gui.Trees;
+using Terminal.Gui;
 
 namespace SharpTree
 {
@@ -29,6 +32,11 @@ namespace SharpTree
                 opts.MinSize,
                 opts.MaxDepth);
 
+            if (!(string.IsNullOrEmpty(opts.JsonPath)))
+            {
+                NodeToJson.SaveToJsonFile(root, opts.JsonPath);
+            }
+
             if (opts.Print)
             {
                 Console.OutputEncoding = System.Text.Encoding.UTF8;
@@ -36,6 +44,10 @@ namespace SharpTree
                 Console.WriteLine("Total size: " + root.Size);
             }
 
+            if (opts.Display)
+            {
+                NodeViewer.Show(root);
+            }
         }
 
         static void DisplayNode(INode node, int indent)

@@ -2,7 +2,7 @@
   "profiles": {
     "SharpTree": {
       "commandName": "Project",
-      "commandLineArgs": "-p",
+      "commandLineArgs": "-D\r\n-j \".\\report_2.json\"",
       "workingDirectory": "C:\\Users\\Isaiah Duarte\\Downloads"
     }
   }

@@ -19,5 +19,11 @@ namespace SharpTree
 
         [Option('d', "maxdepth", HelpText = "Restricts how deep the traversal goes, 0 is unlimited", Required = false, Default = -1)]
         public int MaxDepth { get; set; }
+
+        [Option('D', "display", HelpText = "Displays the node tree.", Required = false, Default = false)]
+        public bool Display { get; set; }
+
+        [Option('j', "jsonpath", HelpText = "Exports to json given the path", Required = false)]
+        public string? JsonPath { get; set; }
     }
 }
