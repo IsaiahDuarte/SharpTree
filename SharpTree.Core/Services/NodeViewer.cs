@@ -1,4 +1,4 @@
-﻿using SharpTree.Core.Models;
+using SharpTree.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,16 +14,19 @@ namespace SharpTree.Core.Services
         public static void Show(INode node)
         {
             Application.Init();
-
+            Application.QuitKey = Key.Esc;
+            Colors.Base.Normal = Application.Driver.MakeAttribute(Color.BrightBlue, Color.Black);
+            
             var top = Application.Top;
-            var win = new Window("Directory Explorer")
+            var win = new Window("Directory Explorer - Press ESC to Close")
             {
                 X = 0,
-                Y = 1,
+                Y = 0,
                 Width = Dim.Fill(),
                 Height = Dim.Fill()
             };
-
+            win.ColorScheme.Normal = Application.Driver.MakeAttribute(Color.BrightBlue, Color.Black);
+            
             top.Add(win);
             var treeView = new TreeView<INode>()
             {
@@ -41,17 +44,19 @@ namespace SharpTree.Core.Services
             treeView.AddObject(node);
             win.Add(treeView);
             Application.Run();
+            top.Dispose();
+            Application.Shutdown();
         }
 
-        static String BytesToString(long byteCount)
+        static string BytesToString(long byteCount)
         {
-            string[] suf = { "B", "KB", "MB", "GB", "TB", "PB", "EB" }; //Longs run out around EB
+            string[] suf = { "B", "KB", "MB", "GB", "TB", "PB", "EB" };
             if (byteCount == 0)
                 return "0" + suf[0];
             long bytes = Math.Abs(byteCount);
             int place = Convert.ToInt32(Math.Floor(Math.Log(bytes, 1024)));
             double num = Math.Round(bytes / Math.Pow(1024, place), 2);
-            return (Math.Sign(byteCount) * num).ToString() + suf[place];
+            return (Math.Sign(byteCount) * num).ToString() + ' ' + suf[place];
         }
     }
 }

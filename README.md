@@ -15,7 +15,7 @@
 ## Features
 
 - **PowerShell Integration**: Easily importable into PowerShell 5.1 or 7 scripts for automation and scripting tasks.
-- **Multi-Targeted**: Compatible with both modern .NET environments (.NET 8) and legacy systems via .NET 4.8 for PowerShell 5.1.
+- **Multi-Targeted**: Compatible with both modern .NET environments (.NET 8) and legacy systems via .NET 4.8 Framework for PowerShell 5.1.
 
 ## Prerequisites
 
@@ -65,7 +65,7 @@ SharpTree is configured to multi-target both `.NET 8` and `.NET 4.8` to ensure c
    Execute the following command to build for both target frameworks:
 
    ```bash
-   dotnet build -c Release
+   dotnet build -c Release .\SharpTree.Core.Powershell\
    dotnet publish
    ```
 
@@ -134,11 +134,8 @@ Note: Powershell 7 is more efficient and recommended for use.
   [SharpTree.Core.Services.NodeToJson]::SaveToJsonFile($node, C:\report.json)
 
    # Display Node
-
   [SharpTree.Core.Services.NodeViewer]::Show($node)
    ```
-  ![{B5F5FF13-2679-45E7-A7AF-6331116E5392}](https://github.com/user-attachments/assets/910e7e84-c697-4022-aabf-c459bb10fb83)
-
 
 ## Contributing
 
