@@ -1,6 +1,6 @@
 ﻿# SharpTree
 
-**SharpTree** is a versatile .NET library designed to construct and visualize the filesystem tree structure. It seamlessly integrates with PowerShell 5.1 and 7, allowing users to import the generated DLL and interact with filesystem data directly within PowerShell scripts. SharpTree supports various filesystem traversal behaviors, including single-volume traversal and symbolic link handling.
+**SharpTree** is a tool designed to construct and visualize the filesystem tree structure.
 
 ## Table of Contents
 
@@ -11,14 +11,11 @@
 - [Using SharpTree in PowerShell](#using-sharptree-in-powershell)
   - [Importing the DLL](#importing-the-dll)
   - [Example Usage](#example-usage)
-- [Project Structure](#project-structure)
 
 ## Features
 
-- **Recursive Filesystem Traversal**: Navigate through directories and files starting from a specified root path.
 - **PowerShell Integration**: Easily importable into PowerShell 5.1 or 7 scripts for automation and scripting tasks.
 - **Multi-Targeted**: Compatible with both modern .NET environments (.NET 8) and legacy systems via .NET 4.8 for PowerShell 5.1.
-- **Exception Handling**: Robust error handling to manage I/O operations gracefully.
 
 ## Prerequisites
 
@@ -139,36 +136,14 @@ Note: Powershell 7 is more efficient and recommended for use.
    $Node = [SharpTree.Core.Services.FileSystemReader]::Read($ENV:USERPROFILE, 1024, -1)
 
    # Save node to JSON
-   $Node | ConvertTo-Json -Depth 100 | Out-File -FilePath "Node.JSON"
+  [SharpTree.Core.Services.NodeToJson]::SaveToJsonFile($node, C:\report.json)
 
    # Display Node
-   function Show-Node($node, $indent = 0) {
-      Write-Output "$(' ' * ($indent * 2)) - $($node.Name) ($($node.Size)) bytes"
-      if ($node.IsDirectory -and $node.Children) {
-         foreach ($child in $node.Children) {
-               Show-Node $child ($indent + 1)
-         }
-      }
-   }
-   Show-Node $Node
+
+  [SharpTree.Core.Services.NodeViewer]::Show($node)
    ```
+  ![{B5F5FF13-2679-45E7-A7AF-6331116E5392}](https://github.com/user-attachments/assets/910e7e84-c697-4022-aabf-c459bb10fb83)
 
-   **Sample Output:**
-
-   ```
-   - Users (1234567) bytes
-     - Documents (234567) bytes
-       - Report.docx (34567) bytes
-       - Notes.txt (4567) bytes
-     - Pictures (123456) bytes
-       - Vacation.jpg (23456) bytes
-       - Family.png (34567) bytes
-   ```
-
-## Project Structure
-
-- **Models/**: Contains interfaces and classes representing filesystem nodes (`INode`, `DirectoryNode`, `FileNode`).
-- **Services/**: Houses services like `FileSystemReader` responsible for reading and constructing the filesystem tree.
 
 ## Contributing
 
