@@ -136,6 +136,7 @@ Note: Powershell 7 is more efficient and recommended for use.
    # Display Node
   [SharpTree.Core.Services.NodeViewer]::Show($node)
    ```
+![{FDCEC1FE-9FCC-43C5-A109-8A9080152673}](https://github.com/user-attachments/assets/0a52f059-19e9-4afc-a39c-66efd215fe42)
 
 ## Contributing
 
