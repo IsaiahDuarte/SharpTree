@@ -66,6 +66,7 @@ SharpTree is configured to multi-target both `.NET 8` and `.NET 4.8` to ensure c
 
    ```bash
    dotnet build -c Release
+   dotnet publish
    ```
 
 4. **Locate the Generated DLLs**
@@ -73,15 +74,9 @@ SharpTree is configured to multi-target both `.NET 8` and `.NET 4.8` to ensure c
    After a successful build, the DLLs will be located in:
 
    ```
-    SharpTree/
-    ├─ bin/
-    │  ├─ SharpTree/
-    │  │  ├─ SharpTree.exe
-    │  ├─ SharpTree.Core/
-    │  │  ├─ SharpTree.Core.dll
-    │  ├─ SharpTree.Core.Powershell/
-    │  │  ├─ SharpTree.Core.Powershell.dll
-
+   \bin\SharpTree\publish
+   \bin\SharpTree.Core\publish
+   \bin\SharpTree.Core.Powershell
    ```
 
    - **For PowerShell 5.1**: Use the `SharpTree.Core.Powershell/SharpTree.Core.Powershell.dll` as it ensures compatibility.
