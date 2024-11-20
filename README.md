@@ -96,7 +96,7 @@ $dllPath = "C:\Path\To\SharpTree\bin\SharpTree.Core.Powershell\SharpTree.Core.Po
 
 **Powershell 7**
 ```powershell
-$dllPath = "C:\Path\To\SharpTree\bin\SharpTree.Core.\SharpTree.Core.Powershell.dll"
+$dllPath = "C:\Path\To\SharpTree\bin\SharpTree.Core\publish\SharpTree.Core.Powershell.dll"
 ```
 
 Note: Powershell 7 is more efficient and recommended for use.
