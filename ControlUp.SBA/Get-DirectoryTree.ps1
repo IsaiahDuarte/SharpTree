@@ -109,9 +109,8 @@ try {
 
     Add-Type -Path $SharpTreeDll
     $Node = [SharpTree.Core.Services.FileSystemReader]::Read($Path, 0, -1)
-    $ErrorActionPreference = "Stop"
-    $Node | ConvertTo-Json -Depth 100 | Out-File -FilePath $OutputJsonPath
-        
+    [SharpTree.Core.Services.NodeToJson]::SaveToJsonFile($node, $OutputJsonPath)
+    
     Write-Host "Saved Directory Tree to $OutputJsonPath"
 } catch {
     Write-Error "Failed to get directory tree: $_"
