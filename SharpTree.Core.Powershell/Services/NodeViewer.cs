@@ -53,7 +53,7 @@ namespace SharpTree.Core.Services
 
         private static string GetAspectString(INode node)
         {
-            return String.Format("{0} - {1}", node.Name, BytesToString(node.Size));
+            return string.Format("{0} - {1}", node.Name, BytesToString(node.Size));
         }
 
         private static string BytesToString(long byteCount)

@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq; 
+using SharpTree.Core.Services;
+
 namespace SharpTree.Core.Models
 {
     public class DirectoryNode : INode
@@ -28,14 +30,10 @@ namespace SharpTree.Core.Models
             get { return _children.AsEnumerable(); }
         }
 
-        public void SortChildren()
-        {
-            _children.Sort((a, b) => b.Size.CompareTo(a.Size));
-        }
-
-        public void AddChild(INode child)
-        {
-            _children.Add(child);
-        }
+        public void SortChildren() => _children.Sort((a, b) => b.Size.CompareTo(a.Size));
+        public void AddChild(INode child) => _children.Add(child);
+        public void Show() => NodeViewer.Show(this);
+        public void SaveToJson(string path) => JsonNode.SaveToJson(this, path);
+        public INode LoadFromJson(string path) => JsonNode.LoadFromJson(path);
     }
 }

@@ -127,14 +127,17 @@ Note: Powershell 7 is more efficient and recommended for use.
    # Load the assembly
    Add-Type -Path $dllPath -PassThru
 
-   # Get the root node                                            #Path      #MinSize #Max Depth
+   # Get the root node                                      #Path #MinSize #MaxDepth
    $Node = [SharpTree.Core.Services.FileSystemReader]::Read($ENV:USERPROFILE, 1024, -1)
 
    # Save node to JSON
-  [SharpTree.Core.Services.NodeToJson]::SaveToJsonFile($node, C:\report.json)
+   $Node.SaveToJson(C:\report.json)
 
    # Display Node
-  [SharpTree.Core.Services.NodeViewer]::Show($node)
+   $Node.Show()
+
+  # Load From JSON
+  $Node = [SharpTree.Core.Services.JsonNode]::LoadFromJson(C:\report.json)
    ```
 ![{FDCEC1FE-9FCC-43C5-A109-8A9080152673}](https://github.com/user-attachments/assets/0a52f059-19e9-4afc-a39c-66efd215fe42)
 

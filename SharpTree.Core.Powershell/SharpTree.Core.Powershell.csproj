@@ -63,7 +63,7 @@
     <Compile Include="Models\RootNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\FileSystemReader.cs" />
-    <Compile Include="Services\NodeToJson.cs" />
+    <Compile Include="Services\JsonNode.cs" />
     <Compile Include="Services\NodeViewer.cs" />
   </ItemGroup>
   <ItemGroup>

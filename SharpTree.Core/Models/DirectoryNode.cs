@@ -10,9 +10,23 @@
         }
 
         public string Name { get; }
-        public long Size => _children.Sum(child => child.Size);
+        public long Size => Children.Sum(child => child.Size);
         public bool IsDirectory => true;
-        public IEnumerable<INode> Children => _children;
+
+        public List<INode> Children
+        {
+            get => _children;
+            set
+            {
+                _children.Clear();
+                if (value != null)
+                {
+                    _children.AddRange(value);
+                }
+            }
+        }
+
+        IEnumerable<INode> INode.Children => Children;
 
         public void SortChildren()
         {

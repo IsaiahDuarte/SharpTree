@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using SharpTree.Core.Services;
+using System.Collections.Generic;
 
 namespace SharpTree.Core.Models
 {
@@ -8,5 +9,9 @@ namespace SharpTree.Core.Models
         long Size { get; }
         bool IsDirectory { get; }
         IEnumerable<INode> Children { get; }
+
+        void Show();
+        void SaveToJson(string path);
+        INode LoadFromJson(string path);
     }
 }

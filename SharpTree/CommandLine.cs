@@ -25,5 +25,8 @@ namespace SharpTree
 
         [Option('j', "jsonpath", HelpText = "Exports to json given the path", Required = false)]
         public string? JsonPath { get; set; }
+
+        [Option('l', "loadjson", HelpText = "loads a json file and displays node", Required = false)]
+        public string? LoadJson { get; set; }
     }
 }

@@ -6,11 +6,14 @@
         {
             Name = name;
             Size = size;
+            Children = new List<INode>();
         }
 
         public string Name { get; }
         public long Size { get; }
         public bool IsDirectory => false;
-        public IEnumerable<INode> Children => Enumerable.Empty<INode>();
+
+        public List<INode> Children { get; set; }
+        IEnumerable<INode> INode.Children => Children;
     }
 }

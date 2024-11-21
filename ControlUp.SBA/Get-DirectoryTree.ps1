@@ -109,7 +109,7 @@ try {
 
     Add-Type -Path $SharpTreeDll
     $Node = [SharpTree.Core.Services.FileSystemReader]::Read($Path, 0, -1)
-    [SharpTree.Core.Services.NodeToJson]::SaveToJsonFile($node, $OutputJsonPath)
+    $Node.SaveToJson($OutputJsonPath)
     
     Write-Host "Saved Directory Tree to $OutputJsonPath"
 } catch {

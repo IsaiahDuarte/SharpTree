@@ -2,7 +2,7 @@
 {
     public class RootNode : INode
     {
-        public RootNode(string name, long size, IEnumerable<INode> children)
+        public RootNode(string name, long size, List<INode> children)
         {
             if (string.IsNullOrEmpty(name))
             {
@@ -11,14 +11,14 @@
 
             Name = name;
             Size = size;
-            Children = new List<INode>(children);
+            Children = children ?? new List<INode>();
         }
 
         public string Name { get; }
-        public long Size { get; }
+        public long Size { get; set; }
         public bool IsDirectory => true;
 
-        public IReadOnlyCollection<INode> Children { get; }
+        public List<INode> Children { get; set; }
         IEnumerable<INode> INode.Children => Children;
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace SharpTree.Core.Models
+﻿using SharpTree.Core.Services;
+
+namespace SharpTree.Core.Models
 {
     public interface INode
     {
@@ -6,5 +8,9 @@
         long Size { get; }
         bool IsDirectory { get; }
         IEnumerable<INode> Children { get; }
+
+        public void Show() => NodeViewer.Show(this);
+        public void SaveToJson(string path) => JsonNode.SaveToJson(this, path);
+        public INode? LoadFromJson(string path) => JsonNode.LoadFromJson(path);
     }
 }

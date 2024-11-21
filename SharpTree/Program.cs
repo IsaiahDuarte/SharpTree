@@ -19,6 +19,13 @@ namespace SharpTree
 
         static void RunWithOptions(Options opts)
         {
+            if(!string.IsNullOrEmpty(opts.LoadJson))
+            {
+                INode? node = JsonNode.LoadFromJson(opts.LoadJson);
+                node?.Show();
+                return;
+            }
+
             string startPath = opts.StartPath;
 
             if (!Directory.Exists(startPath))
@@ -34,7 +41,7 @@ namespace SharpTree
 
             if (!(string.IsNullOrEmpty(opts.JsonPath)))
             {
-                NodeToJson.SaveToJsonFile(root, opts.JsonPath);
+               root.SaveToJson(opts.JsonPath);
             }
 
             if (opts.Print)
@@ -46,7 +53,7 @@ namespace SharpTree
 
             if (opts.Display)
             {
-                NodeViewer.Show(root);
+                root.Show();
             }
         }
 
