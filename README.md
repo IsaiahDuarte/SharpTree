@@ -15,7 +15,7 @@
 ## Features
 
 - **PowerShell Integration**: Easily importable into PowerShell 5.1 or 7 scripts for automation and scripting tasks.
-- **Multi-Targeted**: Compatible with both modern .NET environments (.NET 8) and legacy systems via .NET 4.8 Framework for PowerShell 5.1.
+- **Multi-Targeted**: Compatible with both modern .NET environments (.NET 8) and legacy systems via .NET Framework 4.8 for PowerShell 5.1.
 
 ## Prerequisites
 
@@ -46,7 +46,7 @@
 
 ## Building SharpTree
 
-SharpTree is configured to multi-target both `.NET 8` and `.NET 4.8` to ensure compatibility with PowerShell
+SharpTree is configured to multi-target both `.NET 8` and `.NET Framework 4.8` to ensure compatibility with PowerShell
 
 ### Steps to Build
 
