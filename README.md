@@ -65,7 +65,6 @@ SharpTree is configured to multi-target both `.NET 8` and `.NET Framework 4.8` t
    Execute the following command to build for both target frameworks:
 
    ```bash
-   dotnet build -c Release .\SharpTree.Core.Powershell\
    dotnet publish
    ```
 
@@ -76,7 +75,6 @@ SharpTree is configured to multi-target both `.NET 8` and `.NET Framework 4.8` t
    ```
    \bin\SharpTree\publish
    \bin\SharpTree.Core\publish
-   \bin\SharpTree.Core.Powershell
    ```
 
    - **For PowerShell 5.1**: Use the `SharpTree.Core.Powershell/SharpTree.Core.Powershell.dll` as it ensures compatibility.
