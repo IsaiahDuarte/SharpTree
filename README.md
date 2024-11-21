@@ -46,10 +46,6 @@
 
 ## Building SharpTree
 
-SharpTree is configured to multi-target both `.NET 8` and `.NET Framework 4.8` to ensure compatibility with PowerShell
-
-### Steps to Build
-
 1. **Ensure .NET 8 SDK is Installed**
 
    Download and install the [latest .NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) if you haven't already.
@@ -76,8 +72,6 @@ SharpTree is configured to multi-target both `.NET 8` and `.NET Framework 4.8` t
    \bin\SharpTree\publish
    \bin\SharpTree.Core\publish
    ```
-
-   - **For PowerShell 5.1**: Use the `SharpTree.Core.Powershell/SharpTree.Core.Powershell.dll` as it ensures compatibility.
 
 ## Using SharpTree in PowerShell
 
