@@ -65,6 +65,7 @@
     <Compile Include="Services\FileSystemReader.cs" />
     <Compile Include="Services\JsonNode.cs" />
     <Compile Include="Services\NodeViewer.cs" />
+    <Compile Include="Services\NodeViewerUI.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

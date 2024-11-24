@@ -1,6 +1,8 @@
 ﻿using SharpTree.Core.Models;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using Terminal.Gui;
 using Terminal.Gui.Trees;
 
@@ -35,10 +37,8 @@ namespace SharpTree.Core.Services
                 Width = Dim.Fill(),
                 Height = Dim.Fill() - 2,
                 CanFocus = true,
-                TreeBuilder = new DelegateTreeBuilder<INode>(
-                    node => node.IsDirectory ? node.Children : null
-                ),
-                AspectGetter = node => $"{node.Name} - {NodeViewer.BytesToString(node.Size)}"
+                TreeBuilder = new DelegateTreeBuilder<INode>(GetChildrenForNode),
+                AspectGetter = GetAspectString
             };
             _btnOpen = new Button()
             {
@@ -68,8 +68,8 @@ namespace SharpTree.Core.Services
 
         public void CreateWindow()
         {
-            string? systemDrive = Path.GetPathRoot(Environment.SystemDirectory);
-            string? userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            string systemDrive = Path.GetPathRoot(Environment.SystemDirectory);
+            string userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
 
             _window.ColorScheme.Normal = Application.Driver.MakeAttribute(Color.BrightBlue, Color.Black);
             _top.Add(_window);
@@ -79,7 +79,7 @@ namespace SharpTree.Core.Services
             _treeView.AddObject(_node);
             _window.Add(_treeView, _btnOpen, _btnSystemDrive, _btnUserProfile);
         }
-        private Label GetWaitingLabel(string? path)
+        private Label GetWaitingLabel(string path)
         {
             return new Label($"Loading, please wait...\n{path}")
             {
@@ -88,7 +88,7 @@ namespace SharpTree.Core.Services
             };
         }
 
-        private async void UpdateNode(string? path)
+        private async void UpdateNode(string path)
         {
             _btnUserProfile.Enabled = false;
             _btnSystemDrive.Enabled = false;
@@ -106,10 +106,11 @@ namespace SharpTree.Core.Services
 
             await Task.Run(() =>
             {
-                _treeView.ClearObjects();
+                _treeView.Remove(_node);
                 _node = FileSystemReader.Read(path);
-                Application.MainLoop.Invoke(() => _window.Remove(waitingMessage));
+                _window.Remove(waitingMessage);
             });
+
             _treeView.AddObject(_node);
             _btnUserProfile.Enabled = true;
             _btnSystemDrive.Enabled = true;
@@ -128,11 +129,32 @@ namespace SharpTree.Core.Services
             dialog.ColorScheme.Normal = Application.Driver.MakeAttribute(Color.BrightBlue, Color.Black);
             Application.Run(dialog);
 
-            if(dialog.Canceled) { return; }
-            string? path = dialog.FilePath.ToString();
+            if (dialog.Canceled) { return; }
+            string path = dialog.FilePath.ToString();
             if (string.IsNullOrEmpty(path)) { return; }
             UpdateNode(path);
             dialog.Dispose();
+        }
+
+        private static IEnumerable<INode> GetChildrenForNode(INode node)
+        {
+            return node.IsDirectory ? node.Children : null;
+        }
+
+        private static string GetAspectString(INode node)
+        {
+            return string.Format("{0} - {1}", node.Name, BytesToString(node.Size));
+        }
+
+        private static string BytesToString(long byteCount)
+        {
+            string[] suf = { "B", "KB", "MB", "GB", "TB", "PB", "EB" };
+            if (byteCount == 0)
+                return "0" + suf[0];
+            long bytes = Math.Abs(byteCount);
+            int place = Convert.ToInt32(Math.Floor(Math.Log(bytes, 1024)));
+            double num = Math.Round(bytes / Math.Pow(1024, place), 2);
+            return (Math.Sign(byteCount) * num).ToString() + ' ' + suf[place];
         }
     }
 }
