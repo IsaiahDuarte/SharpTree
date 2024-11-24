@@ -131,7 +131,8 @@ Note: Powershell 7 is more efficient and recommended for use.
   # Load From JSON
   $Node = [SharpTree.Core.Services.JsonNode]::LoadFromJson(C:\report.json)
    ```
-![{FDCEC1FE-9FCC-43C5-A109-8A9080152673}](https://github.com/user-attachments/assets/0a52f059-19e9-4afc-a39c-66efd215fe42)
+
+[Test.webm](https://github.com/user-attachments/assets/9383a831-180e-4c6b-b911-e67952039833)
 
 ## Contributing
 
