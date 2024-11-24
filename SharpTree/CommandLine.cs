@@ -23,6 +23,9 @@ namespace SharpTree
         [Option('D', "display", HelpText = "Displays the node tree.", Required = false, Default = false)]
         public bool Display { get; set; }
 
+        [Option('v', "verbose", HelpText = "Changes message level", Required = false, Default = false)]
+        public bool Verbose { get; set; }
+
         [Option('j', "jsonpath", HelpText = "Exports to json given the path", Required = false)]
         public string? JsonPath { get; set; }
 

@@ -37,7 +37,8 @@ namespace SharpTree
             INode root = FileSystemReader.Read(
                 startPath,
                 opts.MinSize,
-                opts.MaxDepth);
+                opts.MaxDepth,
+                opts.Verbose);
 
             if (!(string.IsNullOrEmpty(opts.JsonPath)))
             {
