@@ -75,6 +75,8 @@ function Get-SharpTree {
         $zipPath = Join-Path $DestinationPath "SharpTree.zip"
         Invoke-WebRequest -Uri $GitPath -OutFile $zipPath
 
+        Unblock-File $zipPath
+
         Expand-Archive -Path $zipPath -DestinationPath $DestinationPath -Force
         Remove-Item -Path $zipPath -Force
 
