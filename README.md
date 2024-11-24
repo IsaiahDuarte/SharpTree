@@ -15,7 +15,7 @@
 ## Features
 
 - **PowerShell Integration**: Easily importable into PowerShell 5.1 or 7 scripts for automation and scripting tasks.
-- **Multi-Targeted**: Compatible with both modern .NET environments (.NET 8) and legacy systems via .NET 4.8 Framework for PowerShell 5.1.
+- **Multi-Targeted**: Compatible with both modern .NET environments (.NET 8) and legacy systems via .NET Framework 4.8 for PowerShell 5.1.
 
 ## Prerequisites
 
@@ -46,10 +46,6 @@
 
 ## Building SharpTree
 
-SharpTree is configured to multi-target both `.NET 8` and `.NET 4.8` to ensure compatibility with PowerShell
-
-### Steps to Build
-
 1. **Ensure .NET 8 SDK is Installed**
 
    Download and install the [latest .NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) if you haven't already.
@@ -65,7 +61,6 @@ SharpTree is configured to multi-target both `.NET 8` and `.NET 4.8` to ensure c
    Execute the following command to build for both target frameworks:
 
    ```bash
-   dotnet build -c Release .\SharpTree.Core.Powershell\
    dotnet publish
    ```
 
@@ -76,10 +71,7 @@ SharpTree is configured to multi-target both `.NET 8` and `.NET 4.8` to ensure c
    ```
    \bin\SharpTree\publish
    \bin\SharpTree.Core\publish
-   \bin\SharpTree.Core.Powershell
    ```
-
-   - **For PowerShell 5.1**: Use the `SharpTree.Core.Powershell/SharpTree.Core.Powershell.dll` as it ensures compatibility.
 
 ## Using SharpTree in PowerShell
 
