@@ -33,14 +33,27 @@ namespace SharpTree.Core.Services
                 X = 0,
                 Y = 0,
                 Width = Dim.Fill(),
-                Height = Dim.Fill(),
+                Height = Dim.Fill() - 2,
                 CanFocus = true,
                 TreeBuilder = new DelegateTreeBuilder<INode>(GetChildrenForNode),
                 AspectGetter = GetAspectString
             };
 
+            var btnOpen = new Button()
+            {
+                Text = "Open",
+                X = 0,
+                Y = Pos.Bottom(treeView),
+                Height = 1,
+                Width = 10
+            };
+            btnOpen.Clicked += () =>
+            {
+                MessageBox.Query("Open", "You clicked the button", "Ok");
+            };
+
             treeView.AddObject(node);
-            win.Add(treeView);
+            win.Add(treeView, btnOpen);
             Application.Run();
             top.Dispose();
             Application.Shutdown();

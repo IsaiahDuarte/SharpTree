@@ -1,10 +1,5 @@
 using SharpTree.Core.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terminal.Gui.Trees;
 using Terminal.Gui;
 
 namespace SharpTree.Core.Services
@@ -13,42 +8,26 @@ namespace SharpTree.Core.Services
     {
         public static void Show(INode node)
         {
-            Application.Init();
-            Application.QuitKey = Key.Esc;
-            Colors.Base.Normal = Application.Driver.MakeAttribute(Color.BrightBlue, Color.Black);
-            
-            var top = Application.Top;
-            var win = new Window("Directory Explorer - Press ESC to Close")
+            try
             {
-                X = 0,
-                Y = 0,
-                Width = Dim.Fill(),
-                Height = Dim.Fill()
-            };
-            win.ColorScheme.Normal = Application.Driver.MakeAttribute(Color.BrightBlue, Color.Black);
-            
-            top.Add(win);
-            var treeView = new TreeView<INode>()
-            {
-                X = 0,
-                Y = 0,
-                Width = Dim.Fill(),
-                Height = Dim.Fill(),
-                CanFocus = true,
-                TreeBuilder = new DelegateTreeBuilder<INode>(
-                    node => node.IsDirectory ? node.Children : null
-                ),
-                AspectGetter = node => $"{node.Name} - {BytesToString(node.Size)}"
-            };
+                Application.Init();
+                Application.QuitKey = Key.Esc;
+                Colors.Base.Normal = Application.Driver.MakeAttribute(Color.BrightBlue, Color.Black);
 
-            treeView.AddObject(node);
-            win.Add(treeView);
-            Application.Run();
-            top.Dispose();
-            Application.Shutdown();
+                var nodeViewerUI = new NodeViewerUI(node);
+                nodeViewerUI.CreateWindow();
+
+                Application.Run();
+                Application.Shutdown();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Query("Error", ex.Message, "OK");
+                Application.Shutdown();
+            }
         }
 
-        static string BytesToString(long byteCount)
+        public static string BytesToString(long byteCount)
         {
             string[] suf = { "B", "KB", "MB", "GB", "TB", "PB", "EB" };
             if (byteCount == 0)

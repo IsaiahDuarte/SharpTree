@@ -7,7 +7,7 @@ namespace SharpTree
     public class Options
     {
         [Value(0, MetaName = "startPath", HelpText = "Path to start traversal.", Required = false)]
-        public string StartPath { get; set; } = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+        public string StartPath { get; set; } = Environment.CurrentDirectory;
 
         public bool FollowSymlinks { get; set; }
 
