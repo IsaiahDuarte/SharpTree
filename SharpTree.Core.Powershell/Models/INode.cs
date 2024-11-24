@@ -1,5 +1,6 @@
 ﻿using SharpTree.Core.Services;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SharpTree.Core.Models
 {
@@ -13,5 +14,8 @@ namespace SharpTree.Core.Models
         void Show();
         void SaveToJson(string path);
         INode LoadFromJson(string path);
+        int GetFileCount();
+
+
     }
 }

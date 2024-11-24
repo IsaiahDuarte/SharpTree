@@ -17,8 +17,9 @@
         public string Name { get; }
         public long Size { get; set; }
         public bool IsDirectory => true;
-
         public List<INode> Children { get; set; }
         IEnumerable<INode> INode.Children => Children;
+        public int GetFileCount() => IsDirectory ? Children.Sum(child => child.GetFileCount()) : 1;
+
     }
 }

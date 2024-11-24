@@ -1,4 +1,5 @@
 ﻿using SharpTree.Core.Models;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 
@@ -6,15 +7,20 @@ namespace SharpTree.Core.Services
 {
     public static class FileSystemReader
     {
-        public static INode Read(string path, long minSize = 0, int maxDepth = -1)
+        public static RootNode Read(string path, long minSize = 0, int maxDepth = -1)
         {
-
             if (!Directory.Exists(path))
             {
                 throw new System.ArgumentException($"Path {path} does not exist", nameof(path));
             }
 
-            return ReadRecursive(path, minSize, maxDepth);
+            return (RootNode)ReadRecursive(path, minSize, maxDepth);
+        }
+
+        public static INode ReadRemote(string remoteComputer, string sharedFolder, string path, long minSize = 0, int maxDepth = -1)
+        {
+            string uncPath = Path.Combine($"\\\\{remoteComputer}\\{sharedFolder}", path);
+            return Read(uncPath, minSize, maxDepth);
         }
 
         private static INode ReadRecursive(string path, long minSize, int maxDepth = -1, bool isRoot = true, int currentDepth = 0)

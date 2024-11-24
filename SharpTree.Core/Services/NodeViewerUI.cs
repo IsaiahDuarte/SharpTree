@@ -14,6 +14,8 @@ namespace SharpTree.Core.Services
         private readonly Button _btnOpen;
         private readonly Button _btnSystemDrive;
         private readonly Button _btnUserProfile;
+        private readonly Label _lblChildren;
+        private readonly Label _lblTimeElapsed;
 
         private INode _node { get; set; }
 
@@ -33,7 +35,7 @@ namespace SharpTree.Core.Services
                 X = 0,
                 Y = 0,
                 Width = Dim.Fill(),
-                Height = Dim.Fill() - 2,
+                Height = Dim.Fill() - 3,
                 CanFocus = true,
                 TreeBuilder = new DelegateTreeBuilder<INode>(
                     node => node.IsDirectory ? node.Children : null
@@ -64,6 +66,20 @@ namespace SharpTree.Core.Services
                 Height = 1,
                 Width = 10
             };
+            _lblChildren = new Label()
+            {
+                X = 1,
+                Y = Pos.Bottom(_btnOpen),
+                Width = Dim.Fill(),
+                Height = 1
+            };
+            _lblTimeElapsed = new Label()
+            {
+                X = 1,
+                Y = Pos.Bottom(_lblChildren),
+                Width = Dim.Fill(),
+                Height = 1
+            };
         }
 
         public void CreateWindow()
@@ -77,7 +93,8 @@ namespace SharpTree.Core.Services
             _btnSystemDrive.Clicked += () => UpdateNode(systemDrive);
             _btnUserProfile.Clicked += () => UpdateNode(userProfile);
             _treeView.AddObject(_node);
-            _window.Add(_treeView, _btnOpen, _btnSystemDrive, _btnUserProfile);
+            _lblChildren.Text = $"File Count: {_node.GetFileCount()}";
+            _window.Add(_treeView, _btnOpen, _btnSystemDrive, _btnUserProfile, _lblChildren, _lblTimeElapsed);
         }
         private Label GetWaitingLabel(string? path)
         {
@@ -99,21 +116,26 @@ namespace SharpTree.Core.Services
                 MessageBox.ErrorQuery("Error", $"Path {path} does not exist", "OK");
                 return;
             }
-
             var waitingMessage = GetWaitingLabel(path);
             _window.Add(waitingMessage);
             _window.SetNeedsDisplay();
 
+            var timer = new System.Diagnostics.Stopwatch();
             await Task.Run(() =>
             {
+                timer.Start();
                 _treeView.ClearObjects();
                 _node = FileSystemReader.Read(path);
+                timer.Stop();
                 Application.MainLoop.Invoke(() => _window.Remove(waitingMessage));
             });
+
             _treeView.AddObject(_node);
             _btnUserProfile.Enabled = true;
             _btnSystemDrive.Enabled = true;
             _btnOpen.Enabled = true;
+            _lblChildren.Text = $"File Count: {_node.GetFileCount()}";
+            _lblTimeElapsed.Text = $"Time Elapsed: {timer.ElapsedMilliseconds} ms";
         }
 
         private void BtnOpen_Clicked()
@@ -128,7 +150,7 @@ namespace SharpTree.Core.Services
             dialog.ColorScheme.Normal = Application.Driver.MakeAttribute(Color.BrightBlue, Color.Black);
             Application.Run(dialog);
 
-            if(dialog.Canceled) { return; }
+            if (dialog.Canceled) { return; }
             string? path = dialog.FilePath.ToString();
             if (string.IsNullOrEmpty(path)) { return; }
             UpdateNode(path);
