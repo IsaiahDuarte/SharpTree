@@ -7,23 +7,17 @@ namespace SharpTree.Core.Services
 {
     public static class FileSystemReader
     {
-        public static RootNode Read(string path, long minSize = 0, int maxDepth = -1)
+        public static INode Read(string path, long minSize = 0, int maxDepth = -1, bool debug = false)
         {
             if (!Directory.Exists(path))
             {
                 throw new System.ArgumentException($"Path {path} does not exist", nameof(path));
             }
 
-            return (RootNode)ReadRecursive(path, minSize, maxDepth);
+            return ReadRecursive(path, minSize, maxDepth, debug);
         }
 
-        public static INode ReadRemote(string remoteComputer, string sharedFolder, string path, long minSize = 0, int maxDepth = -1)
-        {
-            string uncPath = Path.Combine($"\\\\{remoteComputer}\\{sharedFolder}", path);
-            return Read(uncPath, minSize, maxDepth);
-        }
-
-        private static INode ReadRecursive(string path, long minSize, int maxDepth = -1, bool isRoot = true, int currentDepth = 0)
+        private static INode ReadRecursive(string path, long minSize, int maxDepth = -1, bool isRoot = true, int currentDepth = 0, bool debug = false)
         {
             var directoryInfo = new DirectoryInfo(path);
             var node = new DirectoryNode(directoryInfo.Name);
@@ -44,6 +38,8 @@ namespace SharpTree.Core.Services
             {
                 if (entry.Attributes.HasFlag(FileAttributes.ReparsePoint))
                 {
+                    if (debug)
+                        Console.WriteLine($"Skipping ReparsePoint: {entry.FullName}");
                     continue;
                 }
 
@@ -52,6 +48,8 @@ namespace SharpTree.Core.Services
                     switch (entry)
                     {
                         case FileInfo fileInfo:
+                            if (debug)
+                                Console.WriteLine($"Processing file: {fileInfo.FullName}");
                             totalsize += fileInfo.Length;
                             if (fileInfo.Length >= minSize)
                             {
@@ -60,9 +58,11 @@ namespace SharpTree.Core.Services
                             break;
 
                         case DirectoryInfo dirInfo:
+                            if (debug)
+                                Console.WriteLine($"Processing directory: {dirInfo.FullName}");
                             if (maxDepth == -1 || currentDepth < maxDepth)
                             {
-                                var childDir = ReadRecursive(dirInfo.FullName, minSize, maxDepth, false, currentDepth + 1);
+                                var childDir = ReadRecursive(dirInfo.FullName, minSize, maxDepth, false, currentDepth + 1, debug);
                                 totalsize += childDir.Size;
                                 if (childDir.Size > 0)
                                 {
@@ -82,9 +82,13 @@ namespace SharpTree.Core.Services
 
             if (isRoot && node.IsDirectory)
             {
+                if (debug)
+                    Console.WriteLine($"Returning RootNode: {node.Name}");
                 return new RootNode(node.Name, totalsize, node.Children);
             }
 
+            if (debug)
+                Console.WriteLine($"Returning DirectoryNode: {node.Name}");
             return node;
         }
     }
