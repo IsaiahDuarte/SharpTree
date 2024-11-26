@@ -41,51 +41,7 @@ namespace SharpTree.Core.Services
 
             Parallel.ForEach(entries, entry =>
             {
-                try
-                {
-                    if (entry is FileInfo fileInfo)
-                    {
-                        if (verbose)
-                            Console.WriteLine($"Processing file: {fileInfo.FullName}");
-                        if (fileInfo.Length >= minSize)
-                        {
-                            lock (syncObj)
-                            {
-                                totalSize += fileInfo.Length;
-                                node.AddChild(new FileNode(fileInfo.Name, fileInfo.Length));
-                            }
-                        }
-                    }
-                    else if (entry is DirectoryInfo dirInfo)
-                    {
-                        if (verbose)
-                            Console.WriteLine($"Processing directory: {dirInfo.FullName}");
-                        if (maxDepth == -1 || 0 < maxDepth)
-                        {
-                            var childDir = ReadRecursive(
-                                dirInfo.FullName,
-                                minSize,
-                                maxDepth,
-                                isRoot: false,
-                                currentDepth: 1,
-                                verbose);
-
-                            if (childDir.Size > 0)
-                            {
-                                lock (syncObj)
-                                {
-                                    totalSize += childDir.Size;
-                                    node.AddChild(childDir);
-                                }
-                            }
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    if (verbose)
-                        Console.Error.WriteLine($"Error processing {entry.FullName}: {ex.Message}");
-                }
+                ProcessEntry(entry, node, minSize, maxDepth, verbose, ref totalSize, syncObj, 0);
             });
 
             node.Size = totalSize;
@@ -132,42 +88,7 @@ namespace SharpTree.Core.Services
 
             foreach (var entry in entries)
             {
-                try
-                {
-                    if (entry is FileInfo fileInfo)
-                    {
-                        if (verbose)
-                            Console.WriteLine($"Processing file: {fileInfo.FullName}");
-                        if (fileInfo.Length >= minSize)
-                        {
-                            totalSize += fileInfo.Length;
-                            node.AddChild(new FileNode(fileInfo.Name, fileInfo.Length));
-                        }
-                    }
-                    else if (entry is DirectoryInfo dirInfo)
-                    {
-                        if (verbose)
-                            Console.WriteLine($"Processing directory: {dirInfo.FullName}");
-                        if (maxDepth == -1 || currentDepth < maxDepth)
-                        {
-                            var childDir = ReadRecursive(
-                                dirInfo.FullName,
-                                minSize,
-                                maxDepth,
-                                isRoot: false,
-                                currentDepth: currentDepth + 1,
-                                verbose);
-                            totalSize += childDir.Size;
-                            if (childDir.Size > 0)
-                                node.AddChild(childDir);
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    if (verbose)
-                        Console.Error.WriteLine($"Error processing {entry.FullName}: {ex.Message}");
-                }
+                ProcessEntry(entry, node, minSize, maxDepth, verbose, ref totalSize, null, currentDepth);
             }
 
             node.Size = totalSize;
@@ -183,6 +104,71 @@ namespace SharpTree.Core.Services
             if (verbose)
                 Console.WriteLine($"Returning DirectoryNode: {node.Name}");
             return node;
+        }
+
+        private static void ProcessEntry(FileSystemInfo entry, DirectoryNode node, long minSize, int maxDepth, bool verbose, ref long totalSize, object syncObj, int currentDepth)
+        {
+            try
+            {
+                if (entry is FileInfo fileInfo)
+                {
+                    if (verbose)
+                        Console.WriteLine($"Processing file: {fileInfo.FullName}");
+                    if (fileInfo.Length >= minSize)
+                    {
+                        if (syncObj != null)
+                        {
+                            lock (syncObj)
+                            {
+                                totalSize += fileInfo.Length;
+                                node.AddChild(new FileNode(fileInfo.Name, fileInfo.Length));
+                            }
+                        }
+                        else
+                        {
+                            totalSize += fileInfo.Length;
+                            node.AddChild(new FileNode(fileInfo.Name, fileInfo.Length));
+                        }
+                    }
+                }
+                else if (entry is DirectoryInfo dirInfo)
+                {
+                    if (verbose)
+                        Console.WriteLine($"Processing directory: {dirInfo.FullName}");
+                    if (maxDepth == -1 || currentDepth < maxDepth)
+                    {
+                        var childDir = ReadRecursive(
+                            dirInfo.FullName,
+                            minSize,
+                            maxDepth,
+                            isRoot: false,
+                            currentDepth: currentDepth + 1,
+                            verbose);
+
+                        if (childDir.Size > 0)
+                        {
+                            if (syncObj != null)
+                            {
+                                lock (syncObj)
+                                {
+                                    totalSize += childDir.Size;
+                                    node.AddChild(childDir);
+                                }
+                            }
+                            else
+                            {
+                                totalSize += childDir.Size;
+                                node.AddChild(childDir);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                if (verbose)
+                    Console.Error.WriteLine($"Error processing {entry.FullName}: {ex.Message}");
+            }
         }
     }
 }
