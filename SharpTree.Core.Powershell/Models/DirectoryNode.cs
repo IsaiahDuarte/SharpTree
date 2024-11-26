@@ -14,13 +14,7 @@ namespace SharpTree.Core.Models
         }
 
         public string Name { get; private set; } 
-        public long Size
-        {
-            get
-            {
-                return _children.Sum(child => child.Size);
-            }
-        }
+        public long Size { get; set; }
         public bool IsDirectory
         {
             get { return true; }

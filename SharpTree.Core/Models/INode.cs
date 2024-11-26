@@ -5,7 +5,7 @@ namespace SharpTree.Core.Models
     public interface INode
     {
         string Name { get; }
-        long Size { get; }
+        long Size { get; set; }
         bool IsDirectory { get; }
         IEnumerable<INode> Children { get; }
 

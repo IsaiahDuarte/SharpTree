@@ -10,7 +10,7 @@
         }
 
         public string Name { get; }
-        public long Size { get; }
+        public long Size { get; set; }
         public bool IsDirectory => false;
 
         public List<INode> Children { get; set; }

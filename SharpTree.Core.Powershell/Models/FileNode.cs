@@ -13,7 +13,7 @@ namespace SharpTree.Core.Models
         }
 
         public string Name { get; private set; }
-        public long Size { get; private set; }
+        public long Size { get; set; }
         public bool IsDirectory { get { return false; } }
         public IEnumerable<INode> Children => new List<INode>();
         public void Show() => NodeViewer.Show(this);

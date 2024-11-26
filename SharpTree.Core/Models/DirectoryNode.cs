@@ -10,7 +10,7 @@
         }
 
         public string Name { get; }
-        public long Size => Children.Sum(child => child.Size);
+        public long Size { get; set; }
         public bool IsDirectory => true;
 
         public List<INode> Children

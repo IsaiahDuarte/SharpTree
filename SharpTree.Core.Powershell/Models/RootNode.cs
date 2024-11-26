@@ -20,7 +20,7 @@ namespace SharpTree.Core.Models
         }
 
         public string Name { get; }
-        public long Size { get; }
+        public long Size { get; set; }
         public bool IsDirectory => true;
 
         public IReadOnlyCollection<INode> Children { get; }
