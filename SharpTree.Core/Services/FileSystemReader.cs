@@ -11,7 +11,7 @@ namespace SharpTree.Core.Services
 {
     public static class FileSystemReader
     {
-        public static INode Read(string path, long minSize = 0, int maxDepth = -1, bool verbose = false)
+        public static INode Read(string path, long minSize = 0, int maxDepth = -1, bool verbose = false, bool onlyDirectories = false)
         {
             if (!Directory.Exists(path))
                 throw new ArgumentException($"Path {path} does not exist", nameof(path));
@@ -19,8 +19,8 @@ namespace SharpTree.Core.Services
             var directoryInfo = new DirectoryInfo(path);
             var processingNode = new DirectoryNode(directoryInfo.Name);
             long totalSize = 0;
-
             FileSystemInfo[] entries;
+
             try
             {
                 entries = directoryInfo.GetFileSystemInfos();
@@ -33,28 +33,26 @@ namespace SharpTree.Core.Services
             }
 
             var syncObj = new object();
-
             Parallel.ForEach(entries, entry =>
             {
-                ProcessEntry(entry, processingNode, minSize, maxDepth, verbose, ref totalSize, syncObj, 0); // FIX CS1503: Pass processingNode
+                ProcessEntry(entry, processingNode, minSize, maxDepth, verbose, ref totalSize, syncObj, 0, onlyDirectories);
             });
 
             processingNode.Size = totalSize;
             processingNode.SortChildren();
-
             if (verbose)
                 Console.WriteLine($"Processed Root: {processingNode.Name} with Size: {processingNode.Size}");
 
             return new RootNode(processingNode.Name, processingNode.Size, processingNode.Children);
         }
 
-        private static DirectoryNode ReadRecursive(string path, long minSize, int maxDepth, int currentDepth, bool verbose)
+        private static DirectoryNode ReadRecursive(string path, long minSize, int maxDepth, int currentDepth, bool verbose, bool onlyDirectories)
         {
             var directoryInfo = new DirectoryInfo(path);
             var node = new DirectoryNode(directoryInfo.Name);
             long totalSize = 0;
-
             FileSystemInfo[] entries;
+
             try
             {
                 entries = directoryInfo.GetFileSystemInfos();
@@ -69,20 +67,18 @@ namespace SharpTree.Core.Services
 
             foreach (var entry in entries)
             {
-                ProcessEntry(entry, node, minSize, maxDepth, verbose, ref totalSize, null, currentDepth);
+                ProcessEntry(entry, node, minSize, maxDepth, verbose, ref totalSize, null, currentDepth, onlyDirectories);
             }
 
             node.Size = totalSize;
             node.SortChildren();
-
             if (verbose)
                 Console.WriteLine($"Returning DirectoryNode: {node.Name} with Size: {node.Size}");
 
             return node;
         }
 
-
-        private static void ProcessEntry(FileSystemInfo entry, DirectoryNode node, long minSize, int maxDepth, bool verbose, ref long totalSize, object? syncObj, int currentDepth)
+        private static void ProcessEntry(FileSystemInfo entry, DirectoryNode node, long minSize, int maxDepth, bool verbose, ref long totalSize, object? syncObj, int currentDepth, bool onlyDirectories)
         {
             try
             {
@@ -97,23 +93,22 @@ namespace SharpTree.Core.Services
                 {
                     if (verbose)
                         Console.WriteLine($"Processing file: {fileInfo.FullName}");
-
                     long currentFileSize = 0;
                     try
                     {
-                       currentFileSize = fileInfo.Length;
+                        currentFileSize = fileInfo.Length;
                     }
                     catch (FileNotFoundException fnfEx)
                     {
-                       if (verbose)
-                          Console.Error.WriteLine($"Error accessing file {fileInfo.FullName}: {fnfEx.Message}");
-                       return;
+                        if (verbose)
+                            Console.Error.WriteLine($"Error accessing file {fileInfo.FullName}: {fnfEx.Message}");
+                        return;
                     }
                     catch (IOException ioEx)
                     {
-                       if (verbose)
-                          Console.Error.WriteLine($"IO Error accessing file {fileInfo.FullName}: {ioEx.Message}");
-                       return;
+                        if (verbose)
+                            Console.Error.WriteLine($"IO Error accessing file {fileInfo.FullName}: {ioEx.Message}");
+                        return;
                     }
 
                     if (syncObj is not null)
@@ -121,7 +116,8 @@ namespace SharpTree.Core.Services
                         lock (syncObj)
                         {
                             totalSize += currentFileSize;
-                            if (currentFileSize >= minSize)
+                            // Only add a FileNode if we are not only returning directories and if the file meets the minimum size
+                            if (!onlyDirectories && currentFileSize >= minSize)
                             {
                                 node.AddChild(new FileNode(fileInfo.Name, currentFileSize));
                             }
@@ -130,9 +126,9 @@ namespace SharpTree.Core.Services
                     else
                     {
                         totalSize += currentFileSize;
-                        if (currentFileSize >= minSize)
+                        if (!onlyDirectories && currentFileSize >= minSize)
                         {
-                             node.AddChild(new FileNode(fileInfo.Name, currentFileSize));
+                            node.AddChild(new FileNode(fileInfo.Name, currentFileSize));
                         }
                     }
                 }
@@ -148,42 +144,44 @@ namespace SharpTree.Core.Services
                             minSize,
                             maxDepth,
                             currentDepth + 1,
-                            verbose);
-
+                            verbose,
+                            onlyDirectories);
                         long childDirSize = childDirNode.Size;
-
+                        // Always add directory nodes if they are not empty
                         if (childDirSize > 0 || childDirNode.Children.Any())
                         {
-                             if (syncObj is not null)
-                             {
-                                 lock (syncObj)
-                                 {
-                                     totalSize += childDirSize;
-                                     node.AddChild(childDirNode);
-                                 }
-                             }
-                             else
-                             {
-                                 totalSize += childDirSize;
-                                 node.AddChild(childDirNode);
-                             }
-                        } else {
-                             if (syncObj is not null)
-                             {
-                                 lock (syncObj)
-                                 {
-                                     totalSize += childDirSize;
-                                 }
-                             }
-                             else
-                             {
-                                 totalSize += childDirSize;
-                             }
+                            if (syncObj is not null)
+                            {
+                                lock (syncObj)
+                                {
+                                    totalSize += childDirSize;
+                                    node.AddChild(childDirNode);
+                                }
+                            }
+                            else
+                            {
+                                totalSize += childDirSize;
+                                node.AddChild(childDirNode);
+                            }
+                        }
+                        else
+                        {
+                            if (syncObj is not null)
+                            {
+                                lock (syncObj)
+                                {
+                                    totalSize += childDirSize;
+                                }
+                            }
+                            else
+                            {
+                                totalSize += childDirSize;
+                            }
                         }
                     }
                     else if (verbose)
                     {
-                         Console.WriteLine($"Skipping directory due to max depth: {dirInfo.FullName}");
+                        Console.WriteLine($"Skipping directory due to max depth: {dirInfo.FullName}");
                     }
                 }
             }
